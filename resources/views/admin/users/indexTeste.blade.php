@@ -8,6 +8,7 @@
 
 <a href="{{route('users.create')}}">Novo</a>
 
+<x-alertTeste/>
 {{-- table>thead>tr>th*3 --}}
 <table>
     <thead>
