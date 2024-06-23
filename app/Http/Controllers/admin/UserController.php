@@ -4,8 +4,8 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserTesteRequest;
+use App\Http\Requests\UpdateUserTesteRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -23,7 +23,7 @@ class UserController extends Controller
 
     public function store(StoreUserTesteRequest $request){
         // dd($request->all());
-        User::create($request->all());
+        User::create($request->validated()); // com o validated vai pegar somente valores validados
 
         return redirect()
         ->route('users.index')
@@ -48,16 +48,19 @@ class UserController extends Controller
         return view('admin.users.editTeste',compact('user'));
     }
 
-    public function update(Request $request, string $id){
+    public function update(UpdateUserTesteRequest $request, string $id){
 
         if (!$user = User::find($id)) {
             return back()->with('message','Usuário não encontrado!'); // retorna a página anterior
         }
 
-        $user->update($request->only([
-            'name',
-            'email'
-        ]));
+        $data = $request->only('name','email');
+
+        if ($request->password) {
+            $data['password'] = bcrypt($request->password); // com o bcrypt estou criptografando a senha que foi informada
+        }
+
+        $user->update($data);
 
         return redirect()
         ->route('users.index')

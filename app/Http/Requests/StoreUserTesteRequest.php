@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreUserTesteRequest extends FormRequest
 {
@@ -26,9 +27,10 @@ class StoreUserTesteRequest extends FormRequest
             'email' => [ 
                 'required',
                 'email',
-                'unique:users,email', // estou falando é que o email é único na tabela de usuários na coluna e-mail
+                // 'unique:users,email', // estou falando é que o email é único na tabela de usuários na coluna e-mail
                 'min:6', // min de caracteres
                 'max:20', // max de caracteres
+                Rule::unique('users','email')->ignore($this->user, 'id') // outra forma de validação para informar que o usuário caso for ele mesmo não precisa validar o e-mail
             ], // validação por array
             'password' => [
                 'required',
